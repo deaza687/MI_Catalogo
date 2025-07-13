@@ -1,8 +1,66 @@
+/* Estilos generales */
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #f0f0f0;
-}
-h1 {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f9ff; /* Fondo azul claro */
     color: #333;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Encabezado */
+header {
+    text-align: center;
+    border-bottom: 3px solid #3498db; /* Azul brillante */
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+}
+
+h1 {
+    color: #2c3e50; /* Azul oscuro */
+    margin-bottom: 5px;
+}
+
+/* Comunicados */
+.comunicado {
+    background: #e8f4fc;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-left: 5px solid #3498db; /* Borde izquierdo azul */
+    border-radius: 8px;
+    transition: transform 0.3s ease; /* Efecto hover */
+}
+
+.comunicado:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.fecha, .fecha-comunicado {
+    color: #7f8c8d; /* Gris */
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+/* Pie de página */
+footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 15px;
+    border-top: 1px solid #ecf0f1;
+    color: #7f8c8d;
+}
+
+footer a {
+    color: #3498db;
+    text-decoration: none;
 }
