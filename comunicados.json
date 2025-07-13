@@ -2,11 +2,11 @@
   {
     "titulo": "Nuevo comunicado",
     "fecha": "15/07/2025",
-    "contenido": "Este es mi primer comunicado...mi hermana es boba...editado desde GitHub."
-  }
+    "contenido": "Este es mi primer comunicado editado desde GitHub."
+  },
   {
     "titulo": "Recordatorio",
     "fecha": "16/07/2025",
-    "contenido": "Este es el segundo recordatosio"
+    "contenido": "Este es el segundo recordatorio"
   }
 ]
