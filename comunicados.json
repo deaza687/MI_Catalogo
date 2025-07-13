@@ -1,7 +1,12 @@
 [
-    {
-      "titulo": "Ejemplo: Clase de Repaso",
-      "fecha": "20/07/2025",
-      "contenido": "Habrá clase extra el viernes 21/07 en el Aula 302."
-    }
-  ]
+  {
+    "titulo": "Nuevo comunicado",
+    "fecha": "15/07/2025",
+    "contenido": "Este es mi primer comunicado editado desde GitHub."
+  },
+  {
+    "titulo": "Recordatorio",
+    "fecha": "16/07/2025",
+    "contenido": "Este es el segundo recordatorio"
+  }
+]
