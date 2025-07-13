@@ -17,7 +17,7 @@
         </main>
 
         <footer>
-            <p>Contacto: <a href="mailto:profe.deaza@ejemplo.edu">profe.deaza@ejemplo.edu</a></p>
+            <p>Contacto: <a href="mailto:njdeaza@ucundinamarca.edu.co">njdeaza@ucundinamarca.edu.co</a></p>
         </footer>
     </div>
 
@@ -42,5 +42,33 @@
                 });
             });
     </script>
+
+<script>
+    // Marcar comunicados como leídos
+    document.addEventListener('DOMContentLoaded', function() {
+        const comunicados = document.querySelectorAll('.comunicado');
+        
+        comunicados.forEach(com => {
+            com.addEventListener('click', function() {
+                this.classList.toggle('leido');
+                
+                // Guardar estado en localStorage
+                const titulo = this.querySelector('h2').textContent;
+                if(this.classList.contains('leido')) {
+                    localStorage.setItem(titulo, 'leido');
+                } else {
+                    localStorage.removeItem(titulo);
+                }
+            });
+            
+            // Recuperar estado al cargar
+            const titulo = com.querySelector('h2').textContent;
+            if(localStorage.getItem(titulo)) {
+                com.classList.add('leido');
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
