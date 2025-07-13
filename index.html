@@ -44,29 +44,35 @@
     </script>
 
 <script>
-    // Marcar comunicados como leídos
     document.addEventListener('DOMContentLoaded', function() {
-        const comunicados = document.querySelectorAll('.comunicado');
-        
-        comunicados.forEach(com => {
-            com.addEventListener('click', function() {
-                this.classList.toggle('leido');
-                
-                // Guardar estado en localStorage
-                const titulo = this.querySelector('h2').textContent;
-                if(this.classList.contains('leido')) {
-                    localStorage.setItem(titulo, 'leido');
-                } else {
-                    localStorage.removeItem(titulo);
-                }
+        // Cargar comunicados desde JSON
+        fetch('comunicados.json')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('comunicados');
+                data.forEach(com => {
+                    const comunicadoElement = document.createElement('article');
+                    comunicadoElement.className = 'comunicado';
+                    comunicadoElement.innerHTML = `
+                        <h2>${com.titulo}</h2>
+                        <p class="fecha-comunicado">${com.fecha}</p>
+                        <p>${com.contenido.replace(/\n/g, '<br>')}</p>
+                    `;
+                    
+                    // Añadir funcionalidad de click
+                    comunicadoElement.addEventListener('click', function() {
+                        this.classList.toggle('leido');
+                        localStorage.setItem(com.titulo, this.classList.contains('leido') ? 'true' : '');
+                    });
+                    
+                    // Verificar si ya estaba leído
+                    if (localStorage.getItem(com.titulo)) {
+                        comunicadoElement.classList.add('leido');
+                    }
+                    
+                    container.appendChild(comunicadoElement);
+                });
             });
-            
-            // Recuperar estado al cargar
-            const titulo = com.querySelector('h2').textContent;
-            if(localStorage.getItem(titulo)) {
-                com.classList.add('leido');
-            }
-        });
     });
 </script>
 
