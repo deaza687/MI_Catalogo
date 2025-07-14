@@ -8,5 +8,10 @@
     "titulo": "Recordatorio",
     "fecha": "16/07/2025",
     "contenido": "Este es el segundo recordatorio"
+  },
+  {
+    "titulo": "Recordatorio: Lectura",
+    "fecha": "16/07/2025",
+    "contenido": "Por favor leer las diapositivas para estdudiar algunos conceptos sobre funciones https://www.overleaf.com/read/pxmcthdfxgwz#c92906"
   }
 ]
