@@ -1,17 +1,22 @@
 [
   {
+    "titulo": "Reflexión: La Paz Interior",
+    "fecha": "22/02/2026",
+    "contenido": "\"La paz les dejo; mi paz les doy. Yo no se la doy a ustedes como la da el mundo. No se angustien ni se acobarden.\" (Juan 14:27).\n\nEs fundamental cultivar la tranquilidad en nuestro día a día. Les comparto esta canción para acompañar sus momentos de estudio y reflexión: https://www.youtube.com/watch?v=Zw_y3Kj_Sa8"
+  },
+  {
     "titulo": "Nuevo comunicado",
     "fecha": "15/07/2025",
     "contenido": "Este es mi primer comunicado editado desde GitHub."
   },
   {
-    "titulo": "Recordatorio",
+    "titulo": "Registro",
     "fecha": "16/07/2025",
     "contenido": "Este es el segundo recordatorio"
   },
   {
     "titulo": "Recordatorio: Lectura",
     "fecha": "16/07/2025",
-    "contenido": "Por favor leer las diapositivas para estdudiar algunos conceptos sobre funciones https://www.overleaf.com/read/pxmcthdfxgwz#c92906"
+    "contenido": "Por favor leer las diapositivas para estdudiar algunos conceptos sobre funciones https://www.overleaf.com/read/pxmcthdfxg"
   }
 ]
