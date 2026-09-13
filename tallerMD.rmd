@@ -1,0 +1,353 @@
+---
+title: "Taller Práctico: Introducción a dplyr y ggplot2"
+output:
+  html_document:
+    code_download: true
+    toc: true
+    toc_float: true
+    theme: readable
+---
+
+
+```{r setup, include=FALSE}
+# Configuración general de los chunks
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+# Solución para tildes y caracteres especiales en gráficos de Windows
+Sys.setlocale("LC_ALL", "Spanish_Spain.1252")
+
+# Carga de paquetes
+library(dplyr)
+library(ggplot2)
+library(palmerpenguins)
+```
+
+# 1. Guía Rápida de R Markdown
+
+R Markdown permite alternar texto con formato, bloques de código ejecutable (chunks) y visualizaciones dentro de un mismo documento interactivo.
+
+### Estructura Básica y Formato de Texto
+- **Títulos:** Usa `#` para título principal, `##` para subtítulo, `###` para sección.
+- **Formato:** Usa `*cursiva*` para *cursiva*, `**negrita**` para **negrita**, y comillas invertidas para resaltar código en línea.
+- **Listas:** Usa guiones `-` o asteriscos `*` para listas no ordenadas.
+
+### Chunks de Código
+Los bloques de código se crean con tres comillas invertidas seguidas de `{r}`:
+
+```
+```{r mi_bloque, echo=TRUE}
+# Tu código R va aquí
+summary(cars)
+```
+```
+
+* Opciones principales de chunk:
+  * `echo = TRUE`: Muestra el código en el documento generado.
+  * `eval = TRUE`: Ejecuta el código al compilar.
+  * `warning = FALSE` / `message = FALSE`: Oculta advertencias y mensajes de R.
+
+---
+
+# 2. Manipulación y Visualización de Datos con `iris`
+
+Cargamos los paquetes principales del ecosistema `tidyverse`.
+
+```{r carga_librerias}
+library(dplyr)
+library(ggplot2)
+```
+
+El dataset `iris` contiene mediciones en centímetros de la longitud y ancho del sépalo y pétalo de 150 flores de 3 especies de orquídeas (*Iris setosa*, *Iris versicolor* y *Iris virginica*).
+
+---
+
+## 2.1 Funciones Básicas de `dplyr`
+
+El paquete `dplyr` facilita la manipulación de datos tabulares mediante el uso de "verbos" secuenciales encadenados por el operador pipe (`%>%` o `|>`).
+
+### A. `filter()`: Filtrar filas por condiciones lógicas
+Permite seleccionar un subconjunto de filas basándose en una o más condiciones.
+
+```{r ej_filter}
+# Filtrar flores cuya longitud de sépalo sea mayor a 6 cm y pertenezcan a la especie versicolor
+iris %>% 
+  filter(Sepal.Length > 6.0, Species == "versicolor") %>% 
+  head()
+```
+
+### B. `select()`: Seleccionar o renombrar columnas
+Permite elegir columnas específicas dentro de un dataframe.
+
+```{r ej_select}
+# Seleccionar únicamente las variables del pétalo y la especie
+iris %>% 
+  select(Petal.Length, Petal.Width, Species) %>% 
+  head()
+```
+
+### C. `mutate()`: Crear o modificar variables
+Permite agregar nuevas columnas calculadas a partir de las existentes.
+
+```{r ej_mutate}
+# Crear una nueva variable que representa la razón entre longitud y ancho del sépalo
+iris %>% 
+  mutate(Sepal.Ratio = Sepal.Length / Sepal.Width) %>% 
+  select(Sepal.Length, Sepal.Width, Sepal.Ratio, Species) %>% 
+  head()
+```
+
+### D. `arrange()`: Ordenar filas
+Ordena los registros de acuerdo al valor de una o varias columnas.
+
+```{r ej_arrange}
+# Ordenar de forma descendente según la longitud del pétalo
+iris %>% 
+  arrange(desc(Petal.Length)) %>% 
+  head()
+```
+
+### E. `group_by()` y `summarise()`: Agrupar y resumir datos
+Permite calcular métricas estadísticas descriptivas para diferentes subgrupos de datos.
+
+```{r ej_summarise}
+# Calcular el promedio y la desviación estándar de la longitud del sépalo por especie
+iris %>% 
+  group_by(Species) %>% 
+  summarise(
+    Promedio_Sepalo = mean(Sepal.Length),
+    Desviacion_Sepalo = sd(Sepal.Length),
+    Conteo = n()
+  )
+```
+
+---
+
+## 2.2 Visualización de Datos con `ggplot2`
+
+`ggplot2` funciona mediante una gramática de gráficos basada en capas:
+1. `ggplot(data, aes(...))`: Define los datos y los mapeos estéticos ($x$, $y$, colores, etc.).
+2. `geom_*()`: Añade capas geométricas (puntos, líneas, cajas).
+3. `labs()` y `theme_*()`: Ajusta títulos, etiquetas de ejes y apariencia estética general.
+
+
+### A. Diagrama de dispersión.
+
+```{r ej_DiagramaDispersion}
+# Paso 1: Definir los datos (iris) y los ejes/colores en aes()
+
+ggplot(data = iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
+
+# Paso 2: Dibujar los puntos y ajustar su tamaño y transparencia
+  geom_point(size = 2.5, alpha = 0.8) +
+# Paso 3: Agregar títulos descriptivos y etiquetas a los ejes
+  labs(
+    title = "Relación entre Longitud y Ancho del Sépalo",
+    subtitle = "Dataset Iris de Fisher",
+    x = "Longitud del Sépalo (cm)",
+    y = "Ancho del Sépalo (cm)",
+    color = "Especie"
+  ) +
+# Paso 4: Aplicar un tema visual limpio con fondo blanco
+  theme_minimal()
+
+```
+
+  
+### B. Diagrama de dispersión-Recta de Regresión. 
+
+```{r RectaRegresion}
+# Paso 1: Definir las variables continua X (longitud pétalo) e Y (ancho pétalo)
+ggplot(data = iris, aes(x = Petal.Length, y = Petal.Width, color = Species)) +
+# Paso 2: Graficar las observaciones individuales como puntos
+  geom_point(size = 2, alpha = 0.7) +
+# Paso 3: Trazar la recta de regresión lineal (lm) para cada especie sin el intervalo de confianza (se = FALSE)
+  geom_smooth(method = "lm", se = FALSE) +
+# Paso 4: Personalizar las etiquetas y el título
+  labs(
+    title = "Tendencia de Crecimiento: Longitud vs Ancho del Pétalo",
+    x = "Longitud del Pétalo (cm)",
+    y = "Ancho del Pétalo (cm)",
+    color = "Especie"
+  ) +
+# Paso 5: Usar tema con borde completo alrededor del gráfico
+  theme_bw()  
+
+```
+  
+  
+### C. Diagrama Boxplot.  
+
+```{r DiagramaBoxplot}
+# Paso 1: Mapear la variable categórica en X (especie) y la numérica en Y (longitud del pétalo)
+ggplot(data = iris, aes(x = Species, y = Petal.Length, fill = Species)) +
+# Paso 2: Crear el gráfico de cajas con relleno de color y resaltando outliers en rojo
+  geom_boxplot(alpha = 0.7, outlier.color = "red") +
+# Paso 3: Asignar nombres a los ejes y título
+  labs(
+    title = "Distribución de la Longitud del Pétalo por Especie",
+    x = "Especie",
+    y = "Longitud del Pétalo (cm)"
+  ) +
+# Paso 4: Aplicar un tema clásico (sin cuadrícula de fondo)
+  theme_classic() +
+# Paso 5: Eliminar la leyenda lateral (es redundante porque las especies ya están en el eje X)
+  theme(legend.position = "none")  
+
+```
+
+  
+
+
+### D. Histograma.
+
+```{r ej_Histograma}
+# Paso 1: Definir únicamente la variable continua a analizar en el eje X
+ggplot(data = iris, aes(x = Sepal.Length)) +
+# Paso 2: Crear el histograma definiendo el ancho de los intervalos (binwidth) y colores
+  geom_histogram(binwidth = 0.3, fill = "steelblue", color = "white", alpha = 0.8) +
+# Paso 3: Definir los títulos correspondientes
+  labs(
+    title = "Distribución de Frecuencia de la Longitud del Sépalo",
+    x = "Longitud del Sépalo (cm)",
+    y = "Frecuencia"
+  ) +
+# Paso 4: Establecer el tema estético
+  theme_minimal()  
+
+
+```
+
+
+
+  
+### D. Diagrama de Barras.  
+  
+  
+```{r ej_Barras}
+# Paso 1: Usar dplyr para contar el número de flores por cada especie
+conteo_especies <- iris %>% 
+  group_by(Species) %>% 
+  summarise(Cantidad = n())
+
+# Paso 2: Visualizar los datos agrupados usando geom_col() para representar las alturas calculadas
+ggplot(data = conteo_especies, aes(x = Species, y = Cantidad, fill = Species)) +
+# Paso 3: Dibujar las barras especificando su grosor (width)
+  geom_col(width = 0.6) +
+# Paso 4: Personalizar etiquetas
+  labs(
+    title = "Número de Observaciones por Especie",
+    x = "Especie",
+    y = "Cantidad de Muestras"
+  ) +
+# Paso 5: Ajustar tema y quitar la leyenda innecesaria
+  theme_minimal() +
+  theme(legend.position = "none")  
+
+```
+  
+  
+  
+
+---
+
+# 3. El Dataset `palmerpenguins`
+
+El paquete `palmerpenguins` proporciona un conjunto de datos alternativo al clásico `iris`, recolectado por la Dra. Kristen Gorman en la Estación Palmer de la Antártida. Registra observaciones de 344 pingüinos pertenecientes a tres especies distintas.
+
+### Variables del Dataset:
+- **`species`**: Especie del pingüino (*Adelie*, *Chinstrap*, *Gentoo*).
+- **`island`**: Isla del Archipiélago Palmer donde fue documentado (*Biscoe*, *Dream*, *Torgersen*).
+- **`bill_length_mm`**: Longitud del pico en milímetros (desde la base hasta la punta).
+- **`bill_depth_mm`**: Profundidad (alto) del pico en milímetros.
+- **`flipper_length_mm`**: Longitud de la aleta en milímetros.
+- **`body_mass_g`**: Masa corporal del pingüino en gramos.
+- **`sex`**: Sexo del pingüino (*female*, *male*).
+- **`year`**: Año del registro (2007, 2008 o 2009).
+
+---
+
+# 4. Taller Práctico para el Estudiante
+
+**Instrucciones:** Utiliza el paquete `palmerpenguins` para responder los siguientes ejercicios. En todos los pasos debes emplear el operador pipe (`%>%` o `|>`) para la manipulación de datos y la estructuración de tus análisis.
+
+```{r preparacion_taller}
+# Carga de paquetes necesarios para el taller
+# install.packages("palmerpenguins") # Ejecutar en consola si no está instalado
+library(palmerpenguins)
+```
+
+### Ejercicio 1: Limpieza y Descriptivos con `dplyr`
+1. Filtra los datos para eliminar las observaciones con valores faltantes (`NA`) en la variable `sex`.
+2. Agrupa por `species` y `sex`, y calcula la media y la desviación estándar de la masa corporal (`body_mass_g`), así como la cantidad de observaciones por grupo.
+
+### Ejercicio 2: Diagrama de Dispersión (Scatter Plot)
+1. Construye un gráfico de dispersión (`geom_point`) que compare la longitud del pico (`bill_length_mm`) en el eje $X$ con la masa corporal (`body_mass_g`) en el eje $Y$.
+2. Asigna el color de los puntos según la especie del pingüino (`species`).
+3. Agrega títulos descriptivos y ejes etiquetados adecuadamente.
+
+### Ejercicio 3: Incorporación de Regresión Lineal
+1. Toma la estructura del gráfico del Ejercicio 2 y añade una capa de regresión lineal simple (`geom_smooth(method = "lm")`).
+2. Analiza visualmente si la relación entre la longitud del pico y la masa corporal cambia de acuerdo con la especie.
+
+### Ejercicio 4: Comparación de Distribuciones con Boxplots
+1. Crea un diagrama de caja (`geom_boxplot`) para comparar la longitud de las aletas (`flipper_length_mm`) entre las tres especies de pingüinos.
+2. Añade color de relleno (`fill`) según la especie y personaliza el tema gráfico con `theme_minimal()`.
+
+---
+
+# 5. Instrucciones para la Entrega Final
+
+La entrega de esta actividad consta de **dos componentes obligatorios**:
+
+### 1. Documento R Markdown Renderizado (`.html` o `.pdf`)
+- Debes crear un **nuevo archivo `.Rmd`** (diferente a esta guía).
+- Debe incluir la solución completa a los 4 ejercicios planteados en la Sección 4.
+- Cada bloque de código debe estar acompañado por un **párrafo explicativo** que interprete estadísticamente y biológicamente los resultados obtenidos.
+- El documento debe compilar correctamente sin errores.
+
+### 2. Presentación en Video (Duración: 3 a 5 minutos)
+Debes grabar un video exponiendo la solución de tu taller cumpliendo la siguiente estructura:
+- **Presentación:** Breve introducción del estudiante y el dataset asignado.
+- **Demostración en RStudio:** Mostrar la ejecución en vivo del código desarrollado. Explicar qué hace cada función de `dplyr` y `ggplot2` utilizada.
+- **Interpretación de Resultados:** Mostrar las gráficas generadas (dispersión, regresión y boxplot) e interpretar los hallazgos en relación con las características biológicas de las especies de pingüinos.
+- **Formato:** Puedes usar herramientas como Loom, Zoom, OBS o Teams para la grabación. Incluye el enlace al video al inicio de tu documento R Markdown.
+
+
+
+
+
+---
+
+# 6. Material Bibliográfico y Recursos Recomendados
+
+Para profundizar en el uso de R, la manipulación de datos con `dplyr` y la visualización con `ggplot2`, se recomienda consultar la siguiente literatura de acceso libre y documentación oficial:
+
+### Libros de Referencia (Acceso Libre)
+- **R para Ciencia de Datos** (*Hadley Wickham & Garrett Grolemund*): 
+  [https://es.r4ds.hadley.nz/](https://es.r4ds.hadley.nz/)  
+  *(Manual fundamental y traducido al español sobre el ecosistema tidyverse).*
+- **R Markdown: The Definitive Guide** (*Yihui Xie, J.J. Allaire, Garrett Grolemund*): 
+  [https://bookdown.org/yihui/rmarkdown/](https://bookdown.org/yihui/rmarkdown/)  
+  *(Guía completa para la creación de informes dinámicos y documentos interactivos).*
+
+### Documentación Oficial y Torpedos (Cheatsheets)
+- **Hoja de referencia de `dplyr` (Posit Cheatsheets):** 
+  [https://rstudio.github.io/cheatsheets/data-transformation.pdf](https://rstudio.github.io/cheatsheets/data-transformation.pdf)
+- **Hoja de referencia de `ggplot2` (Posit Cheatsheets):** 
+  [https://rstudio.github.io/cheatsheets/data-visualization.pdf](https://rstudio.github.io/cheatsheets/data-visualization.pdf)
+- **Documentación oficial del paquete `palmerpenguins`:** 
+  [https://allisonhorst.github.io/palmerpenguins/](https://allisonhorst.github.io/palmerpenguins/)
+
+### Sitios Web y Portales Comunitarios
+- **R Graph Gallery (Galería de ejemplos de `ggplot2`):** 
+  [https://r-graph-gallery.com/](https://r-graph-gallery.com/)
+- **Posit Primers (Tutoriales interactivos desde el navegador):** 
+  [https://posit.cloud/learn/primers](https://posit.cloud/learn/primers)
+
+
+
+
+
+
+
+
